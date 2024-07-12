@@ -4,11 +4,11 @@ import { useParams, useRouter } from 'solito/navigation'
 
 export function UserDetailScreen() {
   const router = useRouter()
-  const { id } = useParams()
+  // const { id } = useParams()
 
   return (
     <YStack f={1} jc="center" ai="center" gap="$4" bg="$background">
-      <Paragraph ta="center" fow="700" col="$blue10">{`User ID: ${id}`}</Paragraph>
+      <Paragraph ta="center" fow="700" col="$blue10">{`User ID:`}</Paragraph>
       <Button icon={ChevronLeft} onPress={() => router.back()}>
         Go Home
       </Button>
