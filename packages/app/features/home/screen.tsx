@@ -62,7 +62,6 @@ export function HomeScreen({ pagesMode = false }: { pagesMode?: boolean }) {
   )
 }
 
-
 function SheetDemo() {
   const toast = useToastController()
 
