@@ -22,11 +22,19 @@ export type AuthConfig = {
   href?: '/auth/login' | '/auth/signup';
   resend?: () => void;
   handler: Handler;
+  setStatus?: React.Dispatch<React.SetStateAction<'sending' | '' | 'error' | 'success'>>;
+  setVal: React.Dispatch<React.SetStateAction<string>>;
+  val: string;
+  status: 'sending' | '' | 'error' | 'success';
+  error: string;
 }
 
 export function Auth({ authConfig }: { authConfig: AuthConfig }) {
-  const [val, setVal] = useState('')
-  const { title, description, buttonText, linkText, href, resend, handler } = authConfig
+  const { 
+    title, description, buttonText, linkText, href, resend, handler, val, setVal, status, error
+  } = authConfig
+
+  console.log(status)
 
   return (
     <>
@@ -36,6 +44,7 @@ export function Auth({ authConfig }: { authConfig: AuthConfig }) {
           <H1>{title}</H1>
           <Text>{description}</Text>
         </YStack>
+        {status === 'error' && <p style={{ color: 'red' }}>{error}</p>}
         <XStack gap="$2" w='100%'>
           <Input placeholder='email' onChangeText={(text) => setVal(text)} />
           <Button onPress={() => handler({ val })}>{buttonText}</Button>

@@ -18,8 +18,8 @@ export function WaitlistScreen() {
       </XStack>
       <YStack f={1} jc="center" ai="center" gap="$8" p="$4" bg="$background" w={400} mx='auto'>
         <YStack gap='$2' ac='flex-start' w='100%'>
-          <H1>Wait List</H1>
-          <Text>Due to high demand, your email has been added temporarily to a wait list. We will send you updates as we onboard customers and thank you for your patience.</Text>
+          <H1>Thank you!</H1>
+          <Text>Due to high demand, your email has been added temporarily to a wait list. We will send updates as we onboard new members. Thank you for your patience.</Text>
         </YStack>
 
         <XStack w='100%'>
