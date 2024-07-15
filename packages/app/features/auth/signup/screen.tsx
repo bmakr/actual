@@ -42,7 +42,7 @@ export function SignupScreen() {
     // send the request
     async function sendRequest() {
       try {
-        const res = await fetch('http://localhost:3001/api/update/list', {
+        const res = await fetch('https://actualapi-two.vercel.app/api/update/list', {
           method: 'POST',
           body: JSON.stringify({
             val: cleanEmail,
