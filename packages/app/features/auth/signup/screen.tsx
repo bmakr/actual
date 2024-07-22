@@ -58,7 +58,7 @@ export function SignupScreen() {
           return
         }
         setStatus('success')
-        router.push('/waitlist')
+        router.push('/auth/verify')
       } catch (e) {
         console.error(e)
         setError('Internal Error: There was an error sending the request')
