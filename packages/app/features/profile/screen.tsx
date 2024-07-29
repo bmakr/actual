@@ -1,13 +1,18 @@
-import { Button, Paragraph, Spinner, YStack } from '@my/ui'
+import { Button, Paragraph, Spinner, Text, YStack } from '@my/ui'
 import { ChevronLeft } from '@tamagui/lucide-icons'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'solito/navigation'
 
-export function ProfileScreen({ useCookie, logout }: { useCookie: any; logout: any }) {
+export function ProfileScreen({ 
+  getSession, 
+  logout 
+}: { 
+  getSession: any; 
+  logout: any 
+}) {
   const router = useRouter()
-  const cookie = useCookie()
   const [user, setUser] = useState<any>(null)
-  const [status, setStatus] = useState<'loaded' | 'logout' | '' | 'error' | 'success'>('')
+  const [status, setStatus] = useState<'logout' | 'loading' | 'error' | 'success'>('loading')
   const [error, setError] = useState('')
   const [sessionId, setSessionId] = useState('')
 
@@ -15,36 +20,29 @@ export function ProfileScreen({ useCookie, logout }: { useCookie: any; logout: a
     setStatus('logout')
   }
 
-  // set status to loaded
-  useEffect(() => {
-    setStatus('loaded')
-  }, [])
-
   // fetch session data on load
   useEffect(() => {
-    if (status !== 'loaded') return
-    if (cookie) {
-      const { user, id } = cookie
-      setUser(user)
-      setSessionId(id)
-    }
+    if (sessionId) return // skip after setting session id
+    async function handleCookieChange() {
+      const session = await getSession()
+      if (session && session.id) {
+        setSessionId(session.id)
+        setUser(session.user)
+        setStatus('success')
+      } else {
+        setStatus('error')
+        setError('No session found')
+      }
+    };
 
-    // setTimeout(() => {
-    //   async function get() {
-    //     const session = await getSession()
-    //     if (!session) {
-    //       setError('No session found')
-    //       return
-    //     }
-    //     console.log({ session })
-    //     const { user, id } = session
-    //     console.log({ id })
-    //     console.log({ user })
-    //     setUser(user)
-    //   }
-    //   get()
-    // }, 1000)
-  }, [status])
+    // Check for cookie changes every second
+    const intervalId = setInterval(handleCookieChange, 1000);
+
+    // Clean up the interval
+    return () => clearInterval(intervalId)
+
+
+  }, [sessionId])
 
   // logout
   useEffect(() => {
@@ -66,17 +64,18 @@ export function ProfileScreen({ useCookie, logout }: { useCookie: any; logout: a
 
   return (
     <YStack f={1} jc="center" ai="center" gap="$4" bg="$background">
-      {error && <Paragraph ta="center" fow="700" col="$red10">{error}</Paragraph>}
-      {sessionId && (
+      {status === 'success' && (
         <>
-          <Paragraph ta="center" fow="700" col="$blue10">{`Session ID: ${sessionId}`}</Paragraph>
+          <Text ta="center" fow="700" col="$blue10">{`Session ID: ${sessionId}`}</Text>
           <Button icon={ChevronLeft} onPress={handler}>
             Logout
           </Button>
         </>
       )}
-      {!sessionId && (
-        <Spinner />
+      {status === 'loading' && (
+        <YStack>
+          <Spinner />
+        </YStack>
       )}
     </YStack>
   )

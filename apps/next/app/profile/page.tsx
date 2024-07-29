@@ -1,13 +1,12 @@
 'use client'
 
 import { ProfileScreen } from 'app/features/profile/screen'
-import { logout } from '../lib'
-import { useCookie } from '../hooks'
+import { getSession, logout } from '../lib'
 
 export default function Profile() {
   return (
     <>
-      <ProfileScreen useCookie={useCookie} logout={logout} />
+      <ProfileScreen getSession={getSession} logout={logout} />
     </>
   )
 }
