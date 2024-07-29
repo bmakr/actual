@@ -2,7 +2,7 @@ import { Auth, AuthConfig } from '../../../shared/auth/Auth'
 import { useRouter } from 'solito/navigation'
 import { useEffect, useState } from 'react'
 
-export function SignupScreen() {
+export function SignupScreen({ signup }: { signup: any }) {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'sending' | '' | 'error' | 'success'>('')
@@ -14,6 +14,7 @@ export function SignupScreen() {
     return emailRegex.test(email)
   }
 
+  // trigger useEffect
   async function handler(event: any) {
     setStatus('sending')
   }
@@ -42,35 +43,23 @@ export function SignupScreen() {
     // send the request
     async function sendRequest() {
       try {
-        const res = await fetch('https://actualapi-two.vercel.app/api/update/list', {
-          method: 'POST',
-          body: JSON.stringify({
-            val: cleanEmail,
-            name: 'users',
-            key: 'market'
-          })
-        })
-        const response = await res.json()
-        console.log({ response })
+        const response = await signup({ email: cleanEmail })
+        // check for error
         if (response.error) {
           setError(response.error)
           setStatus('error')
           return
         }
-        setStatus('success')
-        router.push('/auth/verify')
+        // success
+        router.push(`/auth/verify/${response.passcodeId}`)
       } catch (e) {
-        console.error(e)
-        setError('Internal Error: There was an error sending the request')
+        setError(`Error: ${e}`)
         setStatus('error')
-        return
       }
     }
 
     sendRequest()
   }, [status])
-
-  
 
   const authConfig: AuthConfig = {
     title: 'Sign Up',

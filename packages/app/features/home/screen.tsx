@@ -12,20 +12,37 @@ import {
   XStack,
   YStack,
   Text,
-  Image
+  Image,
+  Toast
 } from '@my/ui'
 import { ChevronDown, ChevronUp, X, ArrowRightCircle, } from '@tamagui/lucide-icons'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Platform } from 'react-native'
-import { useLink } from 'solito/navigation'
+import { useLink, useSearchParams } from 'solito/navigation'
 import { Footer } from 'app/shared'
 
 export function HomeScreen({ pagesMode = false }: { pagesMode?: boolean }) {
-  // pages mode is for next routing purposes
+  // pages mode is for next routing purposes so we don't need it
   // const linkTarget = pagesMode ? '/pages-example-user' : '/user' 
-  // const linkProps = useLink({
-  //   href: `${linkTarget}/nate`,
-  // })
+  const toast = useToastController()
+
+  // trigger toast
+  useEffect(() => {
+    const params = new URLSearchParams(document.location.search);
+    const toastParams = params?.get('toast')
+    if (toastParams === 'loggedOut') {
+      // const toastController = useToastController()
+      // toastController.show('You have been logged out')
+      const toastMessagesKv = {
+        loggedOut: 'You have been logged out',
+      }
+      toast.show('Actual Alert', {
+        message: toastMessagesKv[toastParams],
+        // native: false,
+      })
+    }
+  }, [])
+
   const linkProps = useLink({
     href: `/auth/signup`,
   })
@@ -75,8 +92,10 @@ export function HomeScreen({ pagesMode = false }: { pagesMode?: boolean }) {
         <Anchor href='/auth/login' textDecorationLine='none'>
           <Text col='$gray7'>I ALREADY HAVE AN ACCOUNT</Text>
         </Anchor>
+
+        <Footer />
+
       </YStack>
-      <Footer />
     </>
   )
 }

@@ -11057,6 +11057,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jose@npm:^5.6.3":
+  version: 5.6.3
+  resolution: "jose@npm:5.6.3"
+  checksum: 10/829f07b8857221ada1cd112a5ebd084e34748f6e3247f5cb03aca0a1f25dd6a07283c9a4f5b854935bda505e3243405640550f8e9eb46c45b172dc4cb336ac89
+  languageName: node
+  linkType: hard
+
 "js-tokens@npm:^3.0.0 || ^4.0.0, js-tokens@npm:^4.0.0":
   version: 4.0.0
   resolution: "js-tokens@npm:4.0.0"
@@ -12369,6 +12376,7 @@ __metadata:
     "@types/node": "npm:^20.14.1"
     app: "npm:0.0.0"
     eslint-config-next: "npm:^14.2.3"
+    jose: "npm:^5.6.3"
     next: "npm:^14.2.3"
     next-compose-plugins: "npm:^2.2.1"
     next-transpile-modules: "npm:^10.0.1"

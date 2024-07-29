@@ -1,6 +1,7 @@
 import {
   H1, Text, YStack, Input, Button, XStack, Anchor,
-  View
+  View,
+  Paragraph
 } from '@my/ui'
 import { Header } from '../header/Header'
 import { Footer } from '../footer/Footer'
@@ -18,20 +19,20 @@ export type AuthConfig = {
   placeholder: 'email' | 'Enter code';
   buttonText: 'Send' | 'Sign Up' | 'Verify';
   afterText: string;
-  linkText?: 'SIGN UP' | 'I ALREADY HAVE AN ACCOUNT' | 'RESEND SECURITY CODE';
+  linkText?: 'I NEED TO SIGN UP' | 'I ALREADY HAVE AN ACCOUNT' | 'RESEND SECURITY CODE';
   href?: '/auth/login' | '/auth/signup';
   resend?: () => void;
   handler: Handler;
   setStatus?: React.Dispatch<React.SetStateAction<'sending' | '' | 'error' | 'success'>>;
   setVal: React.Dispatch<React.SetStateAction<string>>;
   val: string;
-  status: 'sending' | '' | 'error' | 'success';
+  status: 'sending' | 'resend' | '' | 'error' | 'success';
   error: string;
 }
 
 export function Auth({ authConfig }: { authConfig: AuthConfig }) {
-  const { 
-    title, description, buttonText, linkText, href, resend, handler, val, setVal, status, error
+  const {
+    title, description, placeholder, buttonText, linkText, href, resend, handler, val, setVal, status, error
   } = authConfig
 
   console.log(status)
@@ -44,9 +45,9 @@ export function Auth({ authConfig }: { authConfig: AuthConfig }) {
           <H1>{title}</H1>
           <Text>{description}</Text>
         </YStack>
-        {status === 'error' && <p style={{ color: 'red' }}>{error}</p>}
+        {status === 'error' && <Paragraph style={{ color: 'red' }}>{error}</Paragraph>}
         <XStack gap="$2" w='100%'>
-          <Input placeholder='email' onChangeText={(text) => setVal(text)} />
+          <Input placeholder={placeholder} onChangeText={(text) => setVal(text)} />
           <Button onPress={() => handler({ val })}>{buttonText}</Button>
         </XStack>
         <XStack w='100%'>

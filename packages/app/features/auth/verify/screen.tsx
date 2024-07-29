@@ -1,14 +1,101 @@
+import { useEffect, useState } from 'react'
 import { Auth, AuthConfig } from '../../../shared/auth/Auth'
-import { useRouter } from 'solito/navigation'
+import { useRouter, useParams } from 'solito/navigation'
 
-export function VerifyScreen() {
+export function VerifyScreen({
+  verify,
+}: {
+  verify: any
+}) {
   const router = useRouter()
-  function resend() {
-    console.log('Resend')
+  const { id } = useParams()
+  // const { id } = useParams()
+  const [code, setCode] = useState('')
+  const [status, setStatus] = useState<'sending' | 'resend' | '' | 'error' | 'success'>('')
+  const [error, setError] = useState('')
+
+  function handler() {
+    setStatus('sending')
   }
-  function handler({ val }: { val: string }) {
-    console.log('Sign Up')
-    router.push('/waitlist')
+
+  // validate the input
+  function validate({ val }: { val: string }) {
+    if (val.length === 6) {
+      setError('Please enter a 6-digit code')
+      setStatus('error')
+      return true
+    }
+  }
+  
+
+  // handle success
+  useEffect(() => {
+    if (status !== 'success') return
+    router.push(`/profile`)
+  }, [status])
+
+  // handle sending
+  useEffect(() => {
+    if (status !== 'sending') return
+    // prep the input
+    const cleanCode = code.trim()
+    // validate the input
+    validate({ val: cleanCode })
+
+    // send the request
+    async function sendRequest() {
+      let response
+      try {
+        response = verify({ val: cleanCode, id })
+      } catch (e) {
+        setError(`Error: ${e}`)
+        setStatus('error')
+        return
+      }
+
+      // handle the response
+      if (response.error) {
+        setError(response.error)
+        setStatus('error')
+        return
+      }
+
+      // success
+      setStatus('success')
+    }
+
+    sendRequest()
+  }, [status])
+
+  // handle resend
+  useEffect(() => {
+    if (status !== 'resend') return
+    // async function resendRequest() {
+    //   try {
+    //     const res = await fetch('https://actualed.com/api/resend', {
+    //       method: 'POST',
+    //       body: JSON.stringify({
+    //         val: code
+    //       })
+    //     })
+    //     console.log({ res })
+    //     const response = await res.json()
+    //     console.log({ response })
+    //     if (response.sessionId && response.userId) {
+    //       setStatus('success')
+    //     } else {
+    //       setError('Internal error: no data')
+    //     }
+    //   } catch (e) {
+    //     setError(`Error: ${e}`)
+    //     setStatus('error')
+    //   }
+    // }
+    // resendRequest()
+  }, [status])
+
+  function resend() {
+    setStatus('resend')
   }
 
   const authConfig: AuthConfig = {
@@ -19,7 +106,11 @@ export function VerifyScreen() {
     afterText: 'We sent you a security code by email',
     linkText: 'RESEND SECURITY CODE',
     resend,
-    handler
+    handler,
+    setVal: setCode,
+    val: code,
+    error: error,
+    status,
   }
 
   return (
